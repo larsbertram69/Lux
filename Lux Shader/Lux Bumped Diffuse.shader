@@ -53,8 +53,7 @@ SubShader {
 		o.Alpha = diff_albedo.a * _Color.a;
 		o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
 		
-		#include "LuxCore/LuxLightingAmbient.cginc"
-		
+		#include "LuxCore/LuxLightingAmbient.cginc"		
 	}
 ENDCG
 }
