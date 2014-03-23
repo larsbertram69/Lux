@@ -1,13 +1,13 @@
 ﻿- - - - - - - - - - - - - - - -
 LUX SKIN SHADER
 
-The Lux skin shader is base on the work of Eric Penner (http://www.ericpenner.net/) and his pre-integrated skin shader.
-The base of the code Lux uses was ported to unity by farfarer (Base Code taken from: http://www.farfarer.com/blog/).
+The Lux skin shader is based on the work of Eric Penner (http://www.ericpenner.net/) and his pre-integrated skin shader.
+The original code Lux uses was ported to unity by farfarer (http://www.farfarer.com/blog/).
 Also the BRDF Lookup texture was provided by farfarer.
 The example model and textures are taken from: http://www.ten24.info/?p=1164
 
 IMPORTANT INFO
-As the skin shader uses its own lighting function it is forward only – no matter waht lighting mode your camera is set to.
+As the skin shader uses its own lighting function it is forward only – no matter what lighting mode your camera is set to.
 But in order to make it work even when the camera is set to deferred i had to create my own "RenderType" = "LuxOpaque".
 This RenderType is a subshader in the "Camera-DepthNormalTexture" and "Camera-DepthTexture" shader and eliminates all z-fighting artifacts. So please make sure that you have also installed those 2 shaders which are located in "Lux/LuxCore/Resources".
 
