@@ -8,7 +8,11 @@
 		#ifdef NORMAL_IS_WORLDNORMAL
 			float3 worldNormal = IN.normal;
 		#else
-			float3 worldNormal = WorldNormalVector (IN, o.Normal);
+			#ifdef USE_BLURREDNORMAL
+				float3 worldNormal = WorldNormalVector(IN, o.NormalBlur);
+			#else
+				float3 worldNormal = WorldNormalVector(IN, o.Normal);
+			#endif
 		#endif
 
 		#if defined(USE_GLOBAL_DIFFIBL_SETTINGS) && defined(GLDIFFCUBE_ON)
@@ -85,7 +89,7 @@
 		#endif
 		
 		#ifdef LUX_AO_ON
-			half ambientOcclusion = tex2D(_AO, IN.uv_AO).a;
+			half ambientOcclusion = tex2D(_AO,IN.uv_AO).a;
 			o.Emission *= ambientOcclusion;
 		#endif
 
