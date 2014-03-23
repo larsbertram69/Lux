@@ -53,7 +53,7 @@ SubShader {
 	#define LUX_LIGHTING_BP
 //	#define LUX_LINEAR
 //	#define DIFFCUBE_ON
-//	#define SPECCUBE_OFF
+//	#define SPECCUBE_ON
 
 //	Important as we use alpha channel of _SpecTex here	
 	#define LUX_AO_OFF
@@ -118,11 +118,12 @@ SubShader {
 		// Transform it back into a world normal so we can get good derivatives from it.
 		float3 blurredWorldNormal = WorldNormalVector( IN, o.NormalBlur );
 		// Get the scale of the derivatives of the blurred world normal and the world position.
-		
 		float deltaWorldNormal = length( fwidth( blurredWorldNormal ) );
 		float deltaWorldPosition = length( fwidth ( IN.worldPos ) );		
-
-		o.Curvature =  ( deltaWorldNormal / deltaWorldPosition ) * _CurvatureScale * spec_albedo.b;
+		o.Curvature = (deltaWorldNormal / deltaWorldPosition) * _CurvatureScale * spec_albedo.b;
+		
+	//	In order to soften the diffuse ambient lighting we can define USE_BLURREDNORMAL
+		#define USE_BLURREDNORMAL
 		#include "../LuxCore/LuxLightingAmbient.cginc"
 
 	//	Add AO
