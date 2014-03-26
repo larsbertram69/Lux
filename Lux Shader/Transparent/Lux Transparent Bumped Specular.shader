@@ -4,7 +4,6 @@ Properties {
 	_Color ("Diffuse Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB) Alpha (A)", 2D) = "white" {}
 	_SpecTex ("Specular Color (RGB) Roughness (A)", 2D) = "black" {}
-	_Fresnel ("Fresnel Strength", Float) = 0.2
 	_BumpMap ("Normalmap", 2D) = "bump" {}
 		
 	_DiffCubeIBL ("Custom Diffuse Cube", Cube) = "black" {}
@@ -37,7 +36,6 @@ SubShader {
 
 //	This shader will always use forward lighting as it uses alpha blending.
 //	So we do not need the "deferred fresnel" stuff here
-//	No vertex function, no additional inputs (mainLightDir)
 	
 	float4 _Color;
 	sampler2D _MainTex;
@@ -80,10 +78,6 @@ SubShader {
 		// Roughness – gamma for BlinnPhong / linear for CookTorrence
 		o.Specular = LuxAdjustSpecular(spec_albedo.a);
 	
-		// we do not need and write to o.Gloss as it is not available in the Internal-PrePassLighting shader anyway
-		
-		// as the shader always compiles to forward we do not have to write to o.DeferredFresnel
-		
 		#include "../LuxCore/LuxLightingAmbient.cginc"
 		
 	}
