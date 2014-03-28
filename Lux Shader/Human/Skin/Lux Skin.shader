@@ -3,11 +3,11 @@
 // original code taken from: http://www.farfarer.com/blog/2013/02/11/pre-integrated-skin-shader-unity-3d/
 
 
-Shader "Lux/Skin" {
+Shader "Lux/Human/Skin" {
 
 Properties {
 	_MainTex ("Base (RGB) Alpha (A)", 2D) = "white" {}
-	_SpecTex ("Specular (R) Roughness (G) SSS Mask (B), AO (A)", 2D) = "yellow" {}
+	_SpecTex ("Specular (R) Roughness (G) SSS Mask (B), AO (A)", 2D) = "gray" {}
 	_BumpMap ("Normalmap", 2D) = "bump" {}
 
 	// BRDF Lookup texture, light direction on x and curvature on y.
@@ -60,7 +60,7 @@ SubShader {
 
 	// include should be called after all defines
 	// we do not use the direct lighting functions but some other stuff, so let’s get it
-	#include "../LuxCore/LuxLightingDirect.cginc"
+	#include "../../LuxCore/LuxLightingDirect.cginc"
 
 	sampler2D _MainTex;
 	sampler2D _SpecTex;
@@ -124,7 +124,7 @@ SubShader {
 		
 	//	In order to soften the diffuse ambient lighting we can define USE_BLURREDNORMAL
 		#define USE_BLURREDNORMAL
-		#include "../LuxCore/LuxLightingAmbient.cginc"
+		#include "../../LuxCore/LuxLightingAmbient.cginc"
 
 	//	Add AO
 		o.Emission *= spec_albedo.a;

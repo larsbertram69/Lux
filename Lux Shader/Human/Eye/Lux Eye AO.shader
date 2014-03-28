@@ -1,4 +1,4 @@
-﻿Shader "Lux/Eye/Lux Eye AO" {
+﻿Shader "Lux/Human/Eye AO" {
 
 Properties {
 	_Color ("Diffuse Color", Color) = (1,1,1,1)

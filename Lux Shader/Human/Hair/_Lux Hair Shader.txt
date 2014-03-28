@@ -23,6 +23,11 @@ INPUTS
 
 - Main Color: Color that gets multiplied on top of the base texture.
 - Diffuse (RGB) Alpha (A): RGB store the base diffuse color information whereas Alpha stores the transparency.
+- Combined specular texture:
+  - Specular Shift (R): Lets you shift specular highlights per pixel.
+  - Roughness (G): Lets add you add per pixel Roughness.
+  Please keep in mind that the values will be multiplied with the values from the Roughness sliders below. So you should keep this channel rather bright.
+  - Noise (B): Noise that gets applied to the 2nd specular highlight simulating things like cracks in the strands.
 - Normalmap: Just a regular normal map but please make sure that it is not too bumpy.
 
 As the shader supports 2 specular highlights (one from the outer surface of the strand, one from the inner one) you will find 2 "groups" of inputs:
@@ -43,7 +48,7 @@ As the shader supports 2 specular highlights (one from the outer surface of the 
 - - - - - - - - - - - - - - - -
 GEOMETRY
 
-- The shader uses "correct" backface culling. So it is up to you to double and flipp faces where needed.
+- The shader uses "correct" backface culling. So it is up to you to double and flip faces where needed.
 - Ambient Occlusion can be baked to vertex color red: red = 0 = occluded and red = 1 = not occluded.
 
 

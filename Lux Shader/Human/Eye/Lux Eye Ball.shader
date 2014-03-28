@@ -1,4 +1,4 @@
-﻿Shader "Lux/Eye/Lux Eye Ball" {
+﻿Shader "Lux/Human/Eye Ball" {
 	Properties {
 		_MainTex ("Base (RGB) Heightmap (A)", 2D) = "white" {}
 		_SpecTex ("Specular Color (RGB) Roughness (A)", 2D) = "black" {}
@@ -36,7 +36,7 @@
 		#define LUX_AO_OFF
 
 		// include should be called after all defines
-		#include "../LuxCore/LuxLightingDirect.cginc"
+		#include "../../LuxCore/LuxLightingDirect.cginc"
 
 		sampler2D _MainTex;
 		sampler2D _SpecTex;
@@ -95,10 +95,11 @@
 				o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, normalize(IN.viewDir) )));	
 			#endif
 			
-			#include "../LuxCore/LuxLightingAmbient.cginc"
+			#include "../../LuxCore/LuxLightingAmbient.cginc"
 			
 		}
 		ENDCG
 	} 
 	FallBack "Diffuse"
+	CustomEditor "LuxMaterialInspector"
 }
