@@ -9,7 +9,7 @@ TEXTURING, UVS AND TANGENTS
 First and most important is the fact that all hair strands should always follow the tangents of your model which means that in texture space hair should always be vertically aligned. So please make sure that you always paint your hair from top to down or vice versa but never from left to right.
 
 All other inputs might be quite familiar to you.
-We do not need any fancy specular or roughness map here are everything is controlled by sliders or colorpickers (!).
+We do not need any fancy specular or roughness map here are everything is controlled by sliders or colorpickers(!).
 
 If you want to know more about hair rendering please have a look here:
 http://help.chaosgroup.com/vray/help/200R1/vrayhairmtl_params.htm
@@ -29,6 +29,7 @@ INPUTS
   Please keep in mind that the values will be multiplied with the values from the Roughness sliders below. So you should keep this channel rather bright.
   - Noise (B): Noise that gets applied to the 2nd specular highlight simulating things like cracks in the strands.
 - Normalmap: Just a regular normal map but please make sure that it is not too bumpy.
+- Anisotropic Direction (XYZ): Determines the direction of the hair strands in texture space. If they are aligned along the y-axis (V) it should be 0,1,0. If they are aligned horizontaly it would be 1,0,0. The W-component is unused.
 
 As the shader supports 2 specular highlights (one from the outer surface of the strand, one from the inner one) you will find 2 "groups" of inputs:
 
@@ -56,6 +57,6 @@ GEOMETRY
 DEPENDENCIES
 
 - The shader includes LuxLightingAmbient.cginc from the LuxCore.
-- It needs to be feeded with diffuse and specular cube maps and has to be set to linear or gamma. Adjust this editing the shader or use the "SetupLux" script.
+- It needs to be fed with diffuse and specular cube maps and has to be set to linear or gamma. Adjust this editing the shader or use the "SetupLux" script.
 - The shader uses the "LuxMaterialInspector" script.
 - As the shader always renders using forward even if your camera is set to "deferred lighting" it has to use its own depth shader that fixes all problems with z-fighting, real time shadows and directional lights. So please make sure that Lux’s "Camera-DepthNormalTexture" and "Camera-DepthTexture" shaders are present (and placed in a folder called "Resources").

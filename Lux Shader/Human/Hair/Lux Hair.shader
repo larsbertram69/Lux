@@ -133,7 +133,9 @@ Shader "Lux/Human/Hair" {
           inline float3 KajiyaKay (float3 N, float3 T, float3 H, float specNoise) 
           {
             float3 B = normalize(T + N * specNoise);
-            return sqrt(1-pow(dot(B,H),2));
+            //return sqrt(1-pow(dot(B,H),2));
+            float dotBH = dot(B,H);
+            return sqrt(1-dotBH*dotBH);
           }
 
           inline fixed4 LightingLuxHair (SurfaceOutputLuxHair s, fixed3 lightDir, fixed3 viewDir, fixed atten)
@@ -146,12 +148,19 @@ Shader "Lux/Human/Hair" {
 
             // First specular Highlight / Do not add specNoise here 
             float3 H = normalize(lightDir + viewDir);
-            float3 spec = specPower.x * pow( KajiyaKay(s.Normal, _AnisoDir * s.SpecShift, H, _PrimaryShift), specPower.x) * _SpecularColor1;
+            float3 spec1 = specPower.x * pow( KajiyaKay(s.Normal, _AnisoDir * s.SpecShift, H, _PrimaryShift), specPower.x);
             // Add 2nd specular Highlight
-            spec += specPower.y * pow( KajiyaKay(s.Normal, _AnisoDir * s.SpecShift, H, _SecondaryShift ), specPower.y) * s.SpecNoise * _SpecularColor2;
+            float3 spec2 = specPower.y * pow( KajiyaKay(s.Normal, _AnisoDir * s.SpecShift, H, _SecondaryShift ), specPower.y) * s.SpecNoise;
+        
+        //  Fresnel
+            fixed fresnel = exp2(-OneOnLN2_x6 * dot(h, lightDir));
+            spec1 *= _SpecularColor1 + ( 1.0 - _SpecularColor1 ) * fresnel;
+            spec2 *= _SpecularColor2 + ( 1.0 - _SpecularColor2 ) * fresnel;    
+            spec1 += spec2;
+
             // Normalize
-            spec *= 0.125 * dotNL;
-   
+            spec1 *= 0.125 * dotNL;
+
             // Rim
             fixed RimPower = saturate (1.0 - dot(s.Normal, viewDir));
             fixed Rim = _RimStrength * RimPower*RimPower;
@@ -160,7 +169,7 @@ Shader "Lux/Human/Hair" {
             // Diffuse Lighting: Lerp shifts the shadow boundrary for a softer look
             float3 diffuse = saturate (lerp (0.25, 1.0, dotNL));
             // Combine
-            c.rgb = ((s.Albedo + Rim) * diffuse + spec) * _LightColor0.rgb  * (atten * 2);
+            c.rgb = ((s.Albedo + Rim) * diffuse + spec1) * _LightColor0.rgb  * (atten * 2);
             c.a = s.Alpha;
             return c;
           }
