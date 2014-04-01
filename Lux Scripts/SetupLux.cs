@@ -12,7 +12,6 @@ public enum LuxLightingModels
 }
 
 [ExecuteInEditMode]
-[AddComponentMenu("Lux/Lux Setup")]
 public class SetupLux : MonoBehaviour {
 
 	public float Lux_HDR_Scale = 6.0f;
@@ -64,7 +63,7 @@ public class SetupLux : MonoBehaviour {
 		else {
 			isLinear = false;
 		}
-
+		#endif
 		if (LuxLighting == LuxLightingModels.CookTorrence) {	
 			Shader.EnableKeyword("LUX_LIGHTING_CT");
 			Shader.DisableKeyword("LUX_LIGHTING_BP");
@@ -73,8 +72,6 @@ public class SetupLux : MonoBehaviour {
 			Shader.DisableKeyword("LUX_LIGHTING_CT");
 			Shader.EnableKeyword("LUX_LIGHTING_BP");
 		}
-
-		#endif
 		// LINEAR
 		if (isLinear) {
 			Shader.DisableKeyword("LUX_GAMMA");
