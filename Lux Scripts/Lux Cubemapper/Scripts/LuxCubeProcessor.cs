@@ -1,13 +1,11 @@
-﻿//	////////////////////
+//	////////////////////
 //	Lux LuxCubeProcessor
 
 //	http://seblagarde.wordpress.com/2012/06/10/amd-cubemapgen-for-physically-based-rendering/
 
-
-using UnityEngine;
 #if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
-#endif
 public enum ConvoModes
 {
 	Diffuse = 0,
@@ -30,7 +28,7 @@ public class LuxCubeProcessor {
 	public float SpecularPower = 2048; // Matches Lux SpecPower
 
 
-#if UNITY_EDITOR
+
 //--------------------------------------------------------------------------------------
 //	parameter, vars and arrays needed by the script
 
