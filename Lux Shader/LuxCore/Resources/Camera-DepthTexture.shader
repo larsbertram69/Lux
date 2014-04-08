@@ -13,6 +13,48 @@ Category {
 // forward only shaders in deferred which contain #pragma glsl
 // and real time shadows from directional lights
 
+
+SubShader {
+	Tags { "RenderType"="LuxTransparentCutout" }
+	Offset 1, 1
+	Pass {
+CGPROGRAM
+#pragma vertex vert
+#pragma fragment frag
+#include "UnityCG.cginc"
+struct v2f {
+    float4 pos : POSITION;
+	float2 uv : TEXCOORD0;
+	#ifdef UNITY_MIGHT_NOT_HAVE_DEPTH_TEXTURE
+    float2 depth : TEXCOORD1;
+	#endif
+};
+uniform float4 _MainTex_ST;
+v2f vert( appdata_base v ) {
+    v2f o;
+    o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+	o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+    UNITY_TRANSFER_DEPTH(o.depth);
+    return o;
+}
+uniform sampler2D _MainTex;
+uniform fixed _Cutoff;
+uniform fixed4 _Color;
+fixed4 frag(v2f i) : COLOR {
+	fixed4 texcol = tex2D( _MainTex, i.uv );
+	clip( texcol.a*_Color.a - _Cutoff );
+    UNITY_OUTPUT_DEPTH(i.depth);
+}
+ENDCG
+	}
+}
+
+
+// ////////////////////////////////
+// This Shader fixes z-fighting problems when using
+// forward only shaders in deferred which contain #pragma glsl
+// and real time shadows from directional lights
+
 SubShader {
 	Tags { "RenderType"="LuxOpaque" }
 	Offset 1, 1
