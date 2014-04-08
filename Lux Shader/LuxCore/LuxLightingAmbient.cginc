@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'defined LUX_LIGHTMAP_OFF' with 'defined (LUX_LIGHTMAP_OFF)'
+
 #ifndef LuxIBL_CG_INCLUDED
 #define LuxIBL_CG_INCLUDED
 
@@ -31,6 +33,10 @@
 			o.Emission = diff_ibl.rgb * ExposureIBL.x * o.Albedo;
 		#else
 			#if defined (LIGHTMAP_OFF) && defined (DIRLIGHTMAP_OFF)
+//		otherwise add ambient light from Spherical Harmonics
+				o.Emission = ShadeSH9 ( float4(worldNormal.xyz, 1.0)) * o.Albedo;
+			#endif
+			#if defined (LUX_LIGHTMAP_OFF)
 //		otherwise add ambient light from Spherical Harmonics
 				o.Emission = ShadeSH9 ( float4(worldNormal.xyz, 1.0)) * o.Albedo;
 			#endif

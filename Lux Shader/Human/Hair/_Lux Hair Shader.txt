@@ -50,8 +50,7 @@ As the shader supports 2 specular highlights (one from the outer surface of the 
 GEOMETRY
 
 - The shader uses "correct" backface culling. So it is up to you to double and flip faces where needed.
-// - Ambient Occlusion can be baked to vertex color red: red = 0 = occluded and red = 1 = not occluded.
-I had to remove ao as it corrupted the skybox shader on windows(!). I hope i will find a way to bring it back soon.
+- Ambient Occlusion can be baked to vertex color red: red = 0 = occluded and red = 1 = not occluded.
 
 
 - - - - - - - - - - - - - - - -

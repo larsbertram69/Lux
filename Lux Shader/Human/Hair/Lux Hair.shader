@@ -45,6 +45,9 @@ Shader "Lux/Human/Hair" {
           // #define SPECCUBE_ON
       //  Ambient Occlusion is stored in vertex color red
           #define LUX_AO_OFF
+
+      //  Needed in case the diffCUbe is disabled to fall back to sh
+          #define LUX_LIGHTMAP_OFF
               
           fixed4 _Color;
           fixed4 _AnisoDir;
@@ -91,7 +94,7 @@ Shader "Lux/Human/Hair" {
           struct Input
           {
               float2 uv_MainTex;
-              fixed4 color : COLOR; // R stores Ambient Occlusion
+              float4 color : COLOR; // R stores Ambient Occlusion
               float3 viewDir;
               float3 worldNormal;
               float3 worldRefl;
@@ -124,8 +127,7 @@ Shader "Lux/Human/Hair" {
               #include "../../LuxCore/LuxLightingAmbient.cginc"
 
               // Add ambient occlusion stored in vertex color red
-              // As this corrupts the skybox shader on window we have to skip it for the moment...
-              // o.Emission *= IN.color.r;
+              o.Emission *= IN.color.r;
           }
 
 //  Custom Lighting
