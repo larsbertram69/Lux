@@ -1,4 +1,3 @@
-﻿
 // Based on:
 // http://amd-dev.wpengine.netdna-cdn.com/wordpress/media/2012/10/Scheuermann_HairRendering.pdf
 // http://blog.leocov.com/2010/08/lchairshadercgfx-maya-realtime-hair.html
@@ -125,7 +124,8 @@ Shader "Lux/Human/Hair" {
               #include "../../LuxCore/LuxLightingAmbient.cginc"
 
               // Add ambient occlusion stored in vertex color red
-              o.Emission *= IN.color.r;
+              // As this corrupts the skybox shader on window we have to skip it for the moment...
+              // o.Emission *= IN.color.r;
           }
 
 //  Custom Lighting
