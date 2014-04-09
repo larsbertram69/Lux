@@ -65,25 +65,33 @@ struct Input {
 	INTERNAL_DATA
 };
 
+// CustomFog must only be applied in Forward Pass Base (#if !defined ...)
+
 // Fog linear
 void customFogLinear (Input IN, SurfaceOutputLux o, inout fixed4 color)
 {
-	float fogFactor = saturate((unity_FogEnd.x - IN.worldDistance) / (unity_FogEnd.x - unity_FogStart.x));
-	color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
+	#if !defined (UNITY_PASS_FORWARDADD)
+		float fogFactor = saturate((unity_FogEnd.x - IN.worldDistance) / (unity_FogEnd.x - unity_FogStart.x));
+		color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
+	#endif
 }
 // Fog Exp
 void customFogExp (Input IN, SurfaceOutputLux o, inout fixed4 color)
 {
-	float f = IN.worldDistance * unity_FogDensity;
-	float fogFactor = saturate(1 / pow(2.71828,  f));
-	color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
+	#if !defined (UNITY_PASS_FORWARDADD)
+		float f = IN.worldDistance * unity_FogDensity;
+		float fogFactor = saturate(1 / pow(2.71828,  f));
+		color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
+	#endif
 }
 // Fog Exp2
 void customFogExp2 (Input IN, SurfaceOutputLux o, inout fixed4 color)
 {
-	float f = IN.worldDistance * unity_FogDensity;
-	float fogFactor = saturate(1 / pow(2.71828,  f * f));
-	color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
+	#if !defined (UNITY_PASS_FORWARDADD)
+		float f = IN.worldDistance * unity_FogDensity;
+		float fogFactor = saturate(1 / pow(2.71828,  f * f));
+		color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
+	#endif
 }
 
 void LuxTreeVertBark (inout appdata_full v, out Input o) 
