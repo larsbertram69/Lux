@@ -1,5 +1,4 @@
-﻿
-// //////////////////////////
+﻿// //////////////////////////
 // original code taken from: http://www.farfarer.com/blog/2013/02/11/pre-integrated-skin-shader-unity-3d/
 
 
@@ -19,15 +18,16 @@ Properties {
 
 	_DiffCubeIBL ("Custom Diffuse Cube", Cube) = "black" {}
 	_SpecCubeIBL ("Custom Specular Cube", Cube) = "black" {}
-	
+
 	// _Shininess property is needed by the lightmapper - otherwise it throws errors
 	[HideInInspector] _Shininess ("Shininess (only for Lightmapper)", Float) = 0.5
-	[HideInInspector] _AO ("Ambient Occlusion Alpha (A)", 2D) = "white" {}
 }
 
 SubShader { 
 	Tags { "Queue" = "Geometry" "RenderType" = "LuxOpaque" }
 	LOD 400
+//	Built in Fog breaks rendering using directX and only one pixel light
+	Fog { Mode Off } 
 
 //	Offset -1, -1 
 //	Would be needed in deferred to get rid of z-fighting problems caused by:
@@ -36,9 +36,9 @@ SubShader {
 //	So we have to go with our own Depthpath: LuxOpaque.
 //	See: LuxCore/Ressources/Camera-DepthTexture.shader / Camera-DepthNormalTexture.shader
 
-	
+
 	CGPROGRAM
-	#pragma surface surf LuxSkin exclude_path:prepass fullforwardshadows nodirlightmap nolightmap noambient
+	#pragma surface surf LuxSkin exclude_path:prepass fullforwardshadows nodirlightmap nolightmap noambient vertex:vert finalcolor:customFogExp2
 //	#pragma glsl causes z-fighting issues but is needed... so we have to go the long way described above
 	#pragma glsl
 	#pragma target 3.0
@@ -47,6 +47,7 @@ SubShader {
 	#pragma multi_compile LUX_LINEAR LUX_GAMMA
 	#pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
 	#pragma multi_compile SPECCUBE_ON SPECCUBE_OFF
+
 //	#pragma multi_compile LUX_AO_OFF LUX_AO_ON
 
 //	CookTorrance does not look convincing so we skip it here
@@ -75,7 +76,7 @@ SubShader {
 
 	float _BumpBias;
 	float _CurvatureScale;
-	
+
 	// Is set by script
 	float4 ExposureIBL;
 
@@ -92,13 +93,23 @@ SubShader {
 
 	struct Input {
 		float2 uv_MainTex;
-		float2 uv_BumpMap;
 		float3 viewDir;
-		float3 worldPos;
+		// needed by custom fog and curvature calc
+		float4 worldPosLux;
 		float3 worldNormal;
 		float3 worldRefl;
 		INTERNAL_DATA
 	};
+	
+	#define SurfaceOutputLux SurfaceOutputLuxSkin
+	#include "../../LuxCore/LuxCustomFog.cginc"
+	
+	void vert (inout appdata_full v, out Input o) 
+	{
+		UNITY_INITIALIZE_OUTPUT(Input,o);
+		o.worldPosLux.xyz = mul(_Object2World, v.vertex).xyz;
+		o.worldPosLux.w = length(mul(UNITY_MATRIX_MV, v.vertex).xyz);
+	}
 
 	void surf (Input IN, inout SurfaceOutputLuxSkin o) {
 		fixed3 diff_albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
@@ -107,21 +118,21 @@ SubShader {
 		// Diffuse Albedo
 		o.Albedo = diff_albedo.rgb;
 		o.Alpha = 1; //diff_albedo.a;
-		o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+		o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
 		// Specular Color
 		o.SpecularColor = spec_albedo.r;
 		// Roughness – gamma for BlinnPhong / linear for CookTorrence
 		o.Specular = LuxAdjustSpecular(spec_albedo.g);
-	
+
 	//	Calculate the curvature of the model dynamically
 		o.NormalBlur = UnpackNormal( tex2Dlod ( _BumpMap, float4 ( IN.uv_MainTex, 0.0, _BumpBias ) ) );
 		// Transform it back into a world normal so we can get good derivatives from it.
 		float3 blurredWorldNormal = WorldNormalVector( IN, o.NormalBlur );
 		// Get the scale of the derivatives of the blurred world normal and the world position.
 		float deltaWorldNormal = length( fwidth( blurredWorldNormal ) );
-		float deltaWorldPosition = length( fwidth ( IN.worldPos ) );		
+		float deltaWorldPosition = length( fwidth ( IN.worldPosLux.xyz ) );		
 		o.Curvature = (deltaWorldNormal / deltaWorldPosition) * _CurvatureScale * spec_albedo.b;
-		
+
 	//	In order to soften the diffuse ambient lighting we can define USE_BLURREDNORMAL
 		#define USE_BLURREDNORMAL
 		#include "../../LuxCore/LuxLightingAmbient.cginc"
@@ -207,7 +218,7 @@ SubShader {
 		return c;
 	}
 
-	
+
 ENDCG
 
 }

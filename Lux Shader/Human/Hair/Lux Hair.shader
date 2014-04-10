@@ -6,7 +6,7 @@ Shader "Lux/Human/Hair" {
       Properties {
           _Color ("Main Color", Color) = (1,1,1,1)
           _MainTex ("Diffuse (RGB) Alpha (A)", 2D) = "white" {}
-          _SpecularTex ("Specular Shift (R) Roughness (G) Noise (B)", 2D) = "white" {}
+          _SpecularTex ("Specular Shift (R) Roughness (G) Noise (B)", 2D) = "black" {}
           _BumpMap ("Normal (Normal)", 2D) = "bump" {}
           
           _AnisoDir ("Anisotropic Direction (XYZ)" , Vector) = (0.0,1.0,0.0,0.0)
@@ -24,15 +24,20 @@ Shader "Lux/Human/Hair" {
 
           _DiffCubeIBL ("Custom Diffuse Cube", Cube) = "black" {}
           _SpecCubeIBL ("Custom Specular Cube", Cube) = "black" {}
+          
+          // _Shininess property is needed by the lightmapper - otherwise it throws errors
+      [HideInInspector] _Shininess ("Shininess (only for Lightmapper)", Float) = 0.5
       
       }
 
       SubShader{
-          
-          // We have use LuxTransparentCutout here
+      //  We have use LuxTransparentCutout here
           Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="LuxTransparentCutout"}
+      //  Built in Fog breaks rendering using directX and only one pixel light
+          Fog { Mode Off }
+    
           CGPROGRAM
-          #pragma surface surf LuxHair fullforwardshadows noambient nodirlightmap nolightmap alphatest:_Cutoff
+          #pragma surface surf LuxHair fullforwardshadows noambient nodirlightmap nolightmap alphatest:_Cutoff vertex:vert finalcolor:customFogExp2
           #pragma target 3.0
           #pragma glsl
 
@@ -40,9 +45,10 @@ Shader "Lux/Human/Hair" {
           #pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
           #pragma multi_compile SPECCUBE_ON SPECCUBE_OFF
 
-          // #define LUX_LINEAR
-          // #define DIFFCUBE_ON
-          // #define SPECCUBE_ON
+      //  #define LUX_LINEAR
+      //  #define DIFFCUBE_ON
+      //  #define SPECCUBE_ON
+      
       //  Ambient Occlusion is stored in vertex color red
           #define LUX_AO_OFF
 
@@ -95,11 +101,23 @@ Shader "Lux/Human/Hair" {
           {
               float2 uv_MainTex;
               float4 color : COLOR; // R stores Ambient Occlusion
+              float4 worldPosLux; // needed by custom fog
               float3 viewDir;
               float3 worldNormal;
               float3 worldRefl;
               INTERNAL_DATA
           };
+          
+          // Include CustomFog
+          #define SurfaceOutputLux SurfaceOutputLuxHair
+          #include "../../LuxCore/LuxCustomFog.cginc"
+          
+          void vert (inout appdata_full v, out Input o) 
+          {
+              UNITY_INITIALIZE_OUTPUT(Input,o);
+              o.worldPosLux.xyz = 0; //mul(_Object2World, v.vertex).xyz;
+              o.worldPosLux.w = length(mul(UNITY_MATRIX_MV, v.vertex).xyz);
+          }
 
           void surf (Input IN, inout SurfaceOutputLuxHair o)
           {

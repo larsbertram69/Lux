@@ -7,7 +7,6 @@ Properties {
 Category {
 	Fog { Mode Off }
 
-
 // ////////////////////////////////
 // This Shader fixes z-fighting problems when using
 // forward only shaders in deferred which contain #pragma glsl
@@ -47,6 +46,7 @@ ENDCG
 	}
 }
 
+
 // ////////////////////////////////
 // This Shader fixes z-fighting problems when using
 // forward only shaders in deferred which contain #pragma glsl
@@ -54,7 +54,7 @@ ENDCG
 
 SubShader {
 	Tags { "RenderType"="LuxOpaque" }
-	//Offset 1, 1
+	Offset 1, 1
 	Pass {
 CGPROGRAM
 #pragma vertex vert

@@ -1,4 +1,4 @@
-﻿- - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - -
 LUX SKIN SHADER
 
 The Lux skin shader is base on the work of Eric Penner (http://www.ericpenner.net/) and his pre-integrated skin shader.
@@ -30,7 +30,8 @@ The shader itself comes with only a few inputs:
 
 - - - - - - - - - - - - - - - -
 BRDF Texture
-When importing the BRDF Texture please set it's Wrap Mode to Clamp. Also ensure it bypasses sRGB sampling (you have to switch to "Advanced" to be able to check this option).
+When importing the BRDF Texture you MUST set it's Wrap Mode to Clamp.
+Also ensure it bypasses sRGB sampling (you have to switch to "Advanced" to be able to check this option).
 
 - - - - - - - - - - - - - - - -
 DEMO ASSETS
@@ -39,7 +40,13 @@ https://drive.google.com/file/d/0B7wuYyJnwF9dbjhrQW8xd2ZnVE0/edit?usp=sharing
 - - - - - - - - - - - - - - - -
 DEPENDENCIES
 
-- The shader includes LuxLightingAmbient.cginc from the LuxCore.
+- The shader includes LuxLightingAmbient.cginc and LuxCustomFog.cginc from the LuxCore.
 - It needs to be feeded with diffuse and specular cube maps and has to be set to linear or gamma. Adjust this editing the shader or use the "SetupLux" script.
 - The shader uses the "LuxMaterialInspector" script.
 - As the shader always renders using forward even if your camera is set to "deferred lighting" it has to use its own depth shader that fixes all problems with z-fighting, real time shadows and directional lights. So please make sure that Lux’s "Camera-DepthNormalTexture" and "Camera-DepthTexture" shaders are present (and placed in a folder called "Resources").
+
+- - - - - - - - - - - - - - - -
+KNOWN ISSUES
+Using the shader on OS X might cause z-fighting artifacts when using deferred lighting + 2 directional lights which both drop shadows.
+It works perfectly with ONE directional light casting shadows + multiple directional light NOT casting shadows + multiple point- or spotlights casting shadows.
+It doesn’t produce any artifact when using forward rendering.
