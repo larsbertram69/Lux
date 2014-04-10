@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'defined LUX_LIGHTMAP_OFF' with 'defined (LUX_LIGHTMAP_OFF)'
-
 #ifndef LuxIBL_CG_INCLUDED
 #define LuxIBL_CG_INCLUDED
 
