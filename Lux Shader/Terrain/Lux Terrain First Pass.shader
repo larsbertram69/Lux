@@ -1,4 +1,4 @@
-﻿Shader "Lux/Terrain/Spec Bumped" {
+Shader "Lux/Terrain/Spec Bumped" {
 Properties {
 
 	_ColorMap ("Custom Color Map (RGB) Ambient Occlusion (A)", 2D) = "white" {}
