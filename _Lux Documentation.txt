@@ -268,21 +268,17 @@ To make it compile for openGL add:
   #pragma glsl
 As it is a bit complex add:
   #pragma target 3.0 
-You have to include the Lux lighting functions:
-  #include "LuxCore/LuxLightingDirect.cginc"
-
 In order to make the shader act as an Ubershader you will have to add:
   #pragma multi_compile LUX_LIGHTING_BP LUX_LIGHTING_CT
   // select between BlinnPhong and CookTorrence direct lighting functions
   #pragma multi_compile LUX_LINEAR LUX_GAMMA
-  // handle Linear and gamma lighting
+  // handle linear and gamma lighting
   #pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
   // use diffuse ambient cube map or spherical harmonics
   #pragma multi_compile SPECCUBE_ON SPECCUBE_OFF
   // turn specular ambient cube map on and off
   #pragma multi_compile LUX_AO_OFF LUX_AO_ON
   // enable or disable ambient occlusion
-
 This will make the compiler generate all different permutations of the shader which will take a while. So while working on your shader you might just comment the lines mentioned above and enable the features you want to test the shader with by adding e.g.:
   #define LUX_LINEAR
   #define DIFFCUBE_ON
@@ -300,6 +296,9 @@ In this case, make sure that:
   #include "LuxCore/LuxLightingDirect.cginc"
 is added after the #define LUX_LIGHTING_CT.
 In deferred lighting always both lighting functions will be present due to the fact that in deferred the internal_prepass shader is responsible for the light calculations.
+
+You have to include the Lux lighting functions:
+  #include "LuxCore/LuxLightingDirect.cginc"
 
 You will have to specify all inputs according to the properties setup in the properties block of course.
 
@@ -323,20 +322,16 @@ But of course you have to take care of some special instructions:
    o.Specular = LuxAdjustSpecular(spec_albedo.a);
 -- you have to write to o.SpecularColor:
    o.SpecularColor = spec_albedo.rgb;
--- in case your shader should work in deferred lighting you have to write to o.DeferredFresnel by adding: 
-   #if defined(UNITY_PASS_PREPASSFINAL) 
-   // Fake Fresnel effect using N dot V / only needed by deferred lighting  
-     o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, normalize(IN.viewDir) )));  
-   #endif
 -- last but not least you have to include the (image based) ambient lighting functions:
    #include "LuxCore/LuxLightingAmbient.cginc"
+   (Update note: o.DeferredFresnel is set by including "LuxLightingAmbient.cginc" automatically. If you need anything special here you can have a look at the terrain shaders and how they handle deferred fresnel.)
 
 Please note: Depending on the location of your shader the paths to the includes might be different.
 
 Ambient lighting is written to o.Emission.
 For this reason all other values that contribute to o.Emission should use:
    o.Emission += ...
-and be applied after including "LuxCore/LuxIBL.cginc" like the illumination shader of the package does.
+and be applied after including "LuxCore/LuxLightingAmbient.cginc" like the illumination shader of the package does.
 
 - - - - - - - - - -
 Shaders using the Metalness workflow
@@ -391,8 +386,6 @@ So lets have a closer look at all the standard pragma multi_compile definitions:
 KNOWN ISSUES
 
 Right now Lux does not support a correct fresnel term in deferred lighting – like any other solution available for unity because the slim g-buffer used by unity’s internal rendering pipeline simply does not allow it.
-
-Checking "Disable specular Cube IBL" in the material inspector will force the shaders to NOT claculate any faked fresnel in deferred lighting as it would juust go crazy.
 
 
 
