@@ -27,6 +27,10 @@
 		//#define COLORMAP_ON
 		//#define COLORMAP_OFF
 
+
+	//	important here as we do not need it here
+		#define NO_DEFERREDFRESNEL
+
 		// include should be called after all defines
 		#include "../LuxCore/LuxLightingDirect.cginc"
 
@@ -109,10 +113,6 @@
 			o.Albedo = c.rgb;
 			// Set Alpha
 			o.Alpha = 0.0;
-
-			#if defined(UNITY_PASS_PREPASSFINAL)	
-				o.DeferredFresnel = 0.0;
-			#endif
 
 			#include "../LuxCore/LuxLightingAmbient.cginc"
 

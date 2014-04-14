@@ -1,4 +1,4 @@
-Shader "Lux/Terrain/Spec Bumped" {
+﻿Shader "Lux/Terrain/Spec Bumped" {
 Properties {
 
 	_ColorMap ("Custom Color Map (RGB) Ambient Occlusion (A)", 2D) = "white" {}
@@ -85,6 +85,9 @@ CGPROGRAM
 //#define GLDIFFCUBE_ON
 //#define COLORMAP_ON
 //#define COLORMAP_OFF
+
+// important here as we use our own function in this shader
+#define NO_DEFERREDFRESNEL
 
 // include should be called after all defines
 #include "../LuxCore/LuxLightingDirect.cginc"
@@ -247,6 +250,8 @@ void surf (Input IN, inout SurfaceOutputLux o) {
 			o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, IN.TanViewDirection.xyz ))) * _FresnelStrength * storedSplatSum * fadeout;
 	#endif
 
+//	Important: We have to remap IN.viewDir here as it is expected by LuxLightingAmbient
+	#define viewDir TanViewDirection
 	#include "../LuxCore/LuxLightingAmbient.cginc"
 	
 	// reduce ambient lighting according colorMap.a (ambient occlusion) and splatsum

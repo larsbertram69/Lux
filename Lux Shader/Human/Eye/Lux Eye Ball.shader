@@ -1,4 +1,4 @@
-﻿Shader "Lux/Human/Eye Ball" {
+Shader "Lux/Human/Eye Ball" {
 	Properties {
 		_MainTex ("Base (RGB) Heightmap (A)", 2D) = "white" {}
 		_SpecTex ("Specular Color (RGB) Roughness (A)", 2D) = "black" {}
@@ -16,7 +16,7 @@
 	SubShader {
 		Tags { "RenderType"="Opaque" }
 		LOD 200
-		
+
 		CGPROGRAM
 		#pragma surface surf LuxDirect noambient
 		#pragma glsl
@@ -31,7 +31,7 @@
 //		#define LUX_LINEAR
 //		#define DIFFCUBE_ON
 //		#define SPECCUBE_ON
-		
+
 		// We cant use AO here as the eye ball tends to move...
 		#define LUX_AO_OFF
 
@@ -90,13 +90,8 @@
 		//	Roughness – gamma for BlinnPhong / linear for CookTorrence
 			o.Specular = LuxAdjustSpecular(spec_albedo.a);
 
-			#if defined(UNITY_PASS_PREPASSFINAL)	
-				// Fake Fresnel effect using N dot V / only needed by deferred lighting	
-				o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, normalize(IN.viewDir) )));	
-			#endif
-			
 			#include "../../LuxCore/LuxLightingAmbient.cginc"
-			
+
 		}
 		ENDCG
 	} 

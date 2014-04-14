@@ -7,6 +7,7 @@ Properties {
 Category {
 	Fog { Mode Off }
 
+
 // ////////////////////////////////
 // This Shader fixes z-fighting problems when using
 // forward only shaders in deferred which contain #pragma glsl

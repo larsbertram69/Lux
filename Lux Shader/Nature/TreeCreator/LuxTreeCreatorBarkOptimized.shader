@@ -33,6 +33,8 @@ CGPROGRAM
 // enable global switch between diff cube ibl and SH for this shader
 #define USE_GLOBAL_DIFFIBL_SETTINGS
 
+#define NO_DEFERREDFRESNEL
+
 //#define LUX_LINEAR
 //#define GLDIFFCUBE_ON
 
@@ -126,13 +128,7 @@ void surf (Input IN, inout SurfaceOutputLux o) {
 	// Specular Color
 	o.SpecularColor = norspc.rrr;
 	o.Normal = UnpackNormalDXT5nm(norspc);
-	#if defined(UNITY_PASS_PREPASSFINAL)	
-		// Fake Fresnel effect using N dot V / only needed by deferred lighting	
-		//o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, normalize(IN.viewDir) )));
-		
-		// Faked fresnel pretty much ruins the billboard fading
-		o.DeferredFresnel = 0;	
-	#endif
+	
 	#include "../../LuxCore/LuxLightingAmbient.cginc"
 
 	// Ambient Occlusion

@@ -66,6 +66,9 @@ CGPROGRAM
 //#define COLORMAP_ON
 //#define COLORMAP_OFF
 
+// important here as we use our own function in this shader
+#define NO_DEFERREDFRESNEL
+
 // include should be called after all defines
 #include "../LuxCore/LuxLightingDirect.cginc"
 
@@ -180,11 +183,14 @@ void surf (Input IN, inout SurfaceOutputLux o) {
 	o.Specular = LuxAdjustSpecular(col.a * fadeout);
 	// Set Alpha
 	o.Alpha = 0.0;
+	
 	#if defined(UNITY_PASS_PREPASSFINAL)	
 	// Fake Fresnel effect using N dot V / only needed by deferred lighting	
 		o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, IN.TanViewDirection.xyz ))) * _FresnelStrength * storedSplatSum * fadeout;
 	#endif
 
+//	Important: We have to remap IN.viewDir here as it is expected by LuxLightingAmbient
+	#define viewDir TanViewDirection
 	#include "../LuxCore/LuxLightingAmbient.cginc"
 
 	// reduce ambient lighting according colorMap.a (ambient occlusion) and splatsum

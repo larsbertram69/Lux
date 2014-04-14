@@ -10,7 +10,7 @@ half4 unity_FogEnd;
 void customFogLinear (Input IN, SurfaceOutputLux o, inout fixed4 color)
 {
 	#if !defined (UNITY_PASS_FORWARDADD)
-		float fogFactor = saturate((unity_FogEnd.x - IN.worldPosLux.w) / (unity_FogEnd.x - unity_FogStart.x));
+		float fogFactor = saturate((unity_FogEnd.x - LUX_CAMERADISTANCE) / (unity_FogEnd.x - unity_FogStart.x));
 		color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
 	#endif
 }
@@ -18,7 +18,7 @@ void customFogLinear (Input IN, SurfaceOutputLux o, inout fixed4 color)
 void customFogExp (Input IN, SurfaceOutputLux o, inout fixed4 color)
 {
 	#if !defined (UNITY_PASS_FORWARDADD)
-		float f = IN.worldPosLux.w * unity_FogDensity;
+		float f = LUX_CAMERADISTANCE * unity_FogDensity;
 		float fogFactor = saturate(1 / pow(2.71828,  f));
 		color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
 	#endif
@@ -27,10 +27,9 @@ void customFogExp (Input IN, SurfaceOutputLux o, inout fixed4 color)
 void customFogExp2 (Input IN, SurfaceOutputLux o, inout fixed4 color)
 {
 	#if !defined (UNITY_PASS_FORWARDADD)
-		float f = IN.worldPosLux.w * unity_FogDensity;
+		float f = LUX_CAMERADISTANCE * unity_FogDensity;
 		float fogFactor = saturate(1 / pow(2.71828,  f * f));
 		color.rgb = lerp(unity_FogColor, color.rgb, fogFactor);
 	#endif
 }
-
 #endif

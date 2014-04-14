@@ -22,8 +22,7 @@ SubShader {
 	#pragma surface surf LuxDirect noambient alpha
 	#pragma glsl
 	#pragma target 3.0
-	
-	
+		
 	#pragma multi_compile LUX_LIGHTING_BP LUX_LIGHTING_CT
 	#pragma multi_compile LUX_LINEAR LUX_GAMMA
 	#pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
@@ -36,6 +35,7 @@ SubShader {
 
 //	This shader will always use forward lighting as it uses alpha blending.
 //	So we do not need the "deferred fresnel" stuff here
+//	No vertex function, no additional inputs (mainLightDir)
 	
 	float4 _Color;
 	sampler2D _MainTex;

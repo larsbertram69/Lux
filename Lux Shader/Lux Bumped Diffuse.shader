@@ -22,6 +22,8 @@ SubShader {
 	#pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
 	#pragma multi_compile LUX_AO_OFF LUX_AO_ON
 
+	#define LUX_DIFFUSE
+
 	float4 _Color;
 	sampler2D _MainTex;
 	sampler2D _BumpMap;
@@ -53,7 +55,8 @@ SubShader {
 		o.Alpha = diff_albedo.a * _Color.a;
 		o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
 		
-		#include "LuxCore/LuxLightingAmbient.cginc"		
+		#include "LuxCore/LuxLightingAmbient.cginc"
+		
 	}
 ENDCG
 }

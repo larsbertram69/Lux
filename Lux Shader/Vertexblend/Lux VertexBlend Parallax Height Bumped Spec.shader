@@ -116,11 +116,6 @@
 			// combine alpha
 			o.Alpha = base.a*blendval.x + base1.a*blendval.y;
 
-			#if defined(UNITY_PASS_PREPASSFINAL)	
-				// Fake Fresnel effect using N dot V / only needed by deferred lighting	
-				o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, normalize(IN.viewDir) )));
-			#endif
-			
 			#include "../LuxCore/LuxLightingAmbient.cginc"
 
 		}

@@ -38,10 +38,10 @@ inline fixed4 LightingLuxDirect_PrePass (SurfaceOutputLux s, half4 light)
 	c.rgb = s.Albedo * light.rgb;
 //	Specular
 	//s.DeferredFresnel based on dot N V (faked fresnel as it should be dot H V)
-	#if defined(SPECCUBE_ON)
+	#if !defined (LUX_DIFFUSE)
 		c.rgb += (s.SpecularColor.rgb + ( 1.0 - s.SpecularColor.rgb) * s.DeferredFresnel.x) * spec * light.rgb;
-	#else
-		c.rgb += s.SpecularColor.rgb * spec * light.rgb;
+//	#else
+//		c.rgb += s.SpecularColor.rgb * spec * light.rgb;
 	#endif
 	// this here is not really worth it:
 	// do not use light.rgb but only the cromatic part of it as we have stores luninance already in the lighting pass

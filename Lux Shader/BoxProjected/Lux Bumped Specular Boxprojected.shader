@@ -30,11 +30,13 @@ SubShader {
 	#pragma multi_compile LUX_LIGHTING_BP LUX_LIGHTING_CT
 	#pragma multi_compile LUX_LINEAR LUX_GAMMA
 	#pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
+
 //	Does not make sense here...
 //	#pragma multi_compile SPECCUBE_ON SPECCUBE_OFF
+
 	#pragma multi_compile LUX_AO_OFF LUX_AO_ON
 
-//	#define LUX_LIGHTING_CT
+//	#define LUX_LIGHTING_BP
 //	#define LUX_LINEAR
 //	#define DIFFCUBE_ON
 
@@ -43,7 +45,9 @@ SubShader {
 
 //	Activate Box Projection in LuxLightingAmbient
 	#define LUX_BOXPROJECTION
-	
+
+//	#define LUX_BOXPRO_STATIC
+
 	// include should be called after all defines
 	#include "../LuxCore/LuxLightingDirect.cginc"
 
@@ -92,11 +96,6 @@ SubShader {
 		o.SpecularColor = spec_albedo.rgb;
 		// Roughness – gamma for BlinnPhong / linear for CookTorrence
 		o.Specular = LuxAdjustSpecular(spec_albedo.a);
-	
-		#if defined(UNITY_PASS_PREPASSFINAL)	
-			// Fake Fresnel effect using N dot V / only needed by deferred lighting	
-			o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, normalize(IN.viewDir) )));	
-		#endif
 		
 		#include "../LuxCore/LuxLightingAmbient.cginc"
 	}

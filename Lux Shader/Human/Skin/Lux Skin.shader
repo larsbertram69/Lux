@@ -101,7 +101,10 @@ SubShader {
 		INTERNAL_DATA
 	};
 	
+	// Overwrite SurfaceOutputLux by SurfaceOutputLuxSkin in customfog
 	#define SurfaceOutputLux SurfaceOutputLuxSkin
+	// Define LUX_CAMERADISTANCE as worldPosLux.w
+	#define LUX_CAMERADISTANCE IN.worldPosLux.w
 	#include "../../LuxCore/LuxCustomFog.cginc"
 	
 	void vert (inout appdata_full v, out Input o) 

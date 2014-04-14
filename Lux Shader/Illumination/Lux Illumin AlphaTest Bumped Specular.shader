@@ -88,12 +88,6 @@ SubShader {
 		// Roughness – gamma for BlinnPhong / linear for CookTorrence
 		o.Specular = LuxAdjustSpecular(spec_albedo.a);
 	
-		#if defined(UNITY_PASS_PREPASSFINAL)	
-			// Fake Fresnel effect using N dot V / only needed by deferred lighting	
-			o.DeferredFresnel = exp2(-OneOnLN2_x6 * max(0, dot(o.Normal, normalize(IN.viewDir) )));	
-		#endif
-		
-		// we do not need and write to o.Gloss as it is not available in the Internal-PrePassLighting shader anyway
 		#include "../LuxCore/LuxLightingAmbient.cginc"
 		
 		o.Emission += illumination.rgb * _EmissionLM * illumination.a;
