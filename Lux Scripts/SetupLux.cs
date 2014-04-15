@@ -13,12 +13,12 @@ public enum LuxLightingModels
 
 [ExecuteInEditMode]
 public class SetupLux : MonoBehaviour {
-
+	
 	public float Lux_HDR_Scale = 6.0f;
 	public bool isLinear;
-
+	
 	public LuxLightingModels LuxLighting;
-
+	
 	// IBL
 	public float Lux_IBL_DiffuseExposure = 1.0f;
 	private float DiffuseExposure;
@@ -29,13 +29,13 @@ public class SetupLux : MonoBehaviour {
 	public Cubemap specularCube = null;
 	public bool specularIsHDR;
 	private Cubemap PlaceHolderCube = null;
-
+	
 	// not needed as we use faked fresnel in deferred
 	// public GameObject MainLightReference = null;
-
+	
 	private float linearFactorDiffuse;
 	private float linearFactorSpecular;
-
+	
 	// Use this for initialization
 	void Start () {
 		UpdateLuxIBLSettings();
@@ -52,7 +52,7 @@ public class SetupLux : MonoBehaviour {
 		//	Shader.SetGlobalVector("Lux_MainLightDir", MainLightReference.transform.forward );
 		//}
 	}
-
+	
 	void UpdateLuxIBLSettings () {
 		#if UNITY_EDITOR
 		// LINEAR
@@ -87,7 +87,7 @@ public class SetupLux : MonoBehaviour {
 			if (specularIsHDR) {
 				SpecularExposure *= Mathf.Pow(Lux_HDR_Scale,2.2333333f);
 			}
-
+			
 		}
 		// GAMMA
 		else {
@@ -97,7 +97,7 @@ public class SetupLux : MonoBehaviour {
 			// exposure is in linear space so we convert it to srgb
 			// Lux_HDR_Scale is already in srgb
 			DiffuseExposure = Mathf.Pow(Lux_IBL_DiffuseExposure, 1.0f / 2.2333333f);
-
+			
 			if (diffuseIsHDR) {
 				DiffuseExposure *= Lux_HDR_Scale;
 			}
@@ -105,7 +105,7 @@ public class SetupLux : MonoBehaviour {
 			if (specularIsHDR) {
 				SpecularExposure *= Lux_HDR_Scale;
 			}
-
+			
 		}
 		/// IBL
 		Shader.SetGlobalVector("ExposureIBL", new Vector4(DiffuseExposure, SpecularExposure, 1.0f, 1.0f) );
@@ -118,10 +118,13 @@ public class SetupLux : MonoBehaviour {
 		else {
 			createPlaceHolderCube ();
 			Shader.SetGlobalTexture("_SpecCubeIBL", PlaceHolderCube);
+			#if UNITY_EDITOR
+				DestroyImmediate(PlaceHolderCube, true);
+			#endif
 		}
 	}
-
-
+	
+	
 	void createPlaceHolderCube () {
 		if( PlaceHolderCube == null ) {
 			PlaceHolderCube = new Cubemap(16,TextureFormat.ARGB32,true);
