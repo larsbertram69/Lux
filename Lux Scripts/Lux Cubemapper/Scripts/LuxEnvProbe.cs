@@ -1,4 +1,4 @@
-//  ////////////////////////////////////
+﻿//  ////////////////////////////////////
 //  Modified version of CubemapMaker.js from BlackIce studio http://www.blackicegames.de/development/?site=dl&id=1
 //  Converted to C# and make it compatible for Lux
 //
@@ -158,12 +158,15 @@ public class LuxEnvProbe : MonoBehaviour {
                 int materials = AssignedMeshes[i].renderer.sharedMaterials.Length;
                 // Get all materials
                 for (int j = 0; j < materials; j++) {
-                    if (AssignedMeshes[i].renderer.sharedMaterials[j].HasProperty("_CubemapPositionWS"))
+                    if(AssignedMeshes[i])
                     {
-                        AssignedMeshes[i].renderer.sharedMaterials[j].SetVector("_CubemapPositionWS", new Vector4(transform.position.x, transform.position.y, transform.position.z, 0));
-                        AssignedMeshes[i].renderer.sharedMaterials[j].SetVector("_CubemapSize", new Vector4(BoxSize.x/2f, BoxSize.y, BoxSize.z/2f, 0));
-                        if (SPECCube != null){
-                            AssignedMeshes[i].renderer.sharedMaterials[j].SetTexture("_SpecCubeIBL", SPECCube);
+                        if (AssignedMeshes[i].renderer.sharedMaterials[j].HasProperty("_CubemapPositionWS"))
+                        {
+                            AssignedMeshes[i].renderer.sharedMaterials[j].SetVector("_CubemapPositionWS", new Vector4(transform.position.x, transform.position.y, transform.position.z, 0));
+                            AssignedMeshes[i].renderer.sharedMaterials[j].SetVector("_CubemapSize", new Vector4(BoxSize.x/2f, BoxSize.y, BoxSize.z/2f, 0));
+                            if (SPECCube != null){
+                                AssignedMeshes[i].renderer.sharedMaterials[j].SetTexture("_SpecCubeIBL", SPECCube);
+                            }
                         }
                     }
                 }
