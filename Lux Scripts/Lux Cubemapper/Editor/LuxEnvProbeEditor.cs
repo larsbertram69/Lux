@@ -32,18 +32,27 @@ public class LuxEnvProbeEditor : Editor
     private SerializedProperty AssignedMeshes;
     private GameObject newAssignedMesh;
 
+    private SerializedProperty ShowBoxSize;
+
 
     //private SerializedProperty init;
 
-    private Object diffcubeObj;
-    private Object speccubeObj;
+// objct to manually assign probes
+    //private Object diffcubeObj;
+    //private Object speccubeObj;
+
+    private SerializedProperty diffcubeObj;
+    private SerializedProperty speccubeObj;
 
     //if you want to show debug msg box
     //just change the value
     //bool ShowDebugMsg = true;
 
-    void OnEnable()
+    public override void OnInspectorGUI()
     {
+
+    //void OnEnable()
+    //{
         Target = (LuxEnvProbe)target;
         LuxProbe = new SerializedObject(target);
 
@@ -64,12 +73,18 @@ public class LuxEnvProbeEditor : Editor
 
         // BoxProjection
         Mode = LuxProbe.FindProperty("Mode");
-        BoxSize = LuxProbe.FindProperty("BoxSize");
+        // BoxSize = LuxProbe.FindProperty("BoxSize");
         // AssignedMeshes = LuxProbe.FindProperty("AssignedMeshes");
-        //init = LuxProbe.FindProperty("init");
-    }
-    public override void OnInspectorGUI()
-    {
+        // init = LuxProbe.FindProperty("init");
+        ShowBoxSize = LuxProbe.FindProperty("ShowBoxSize");
+
+        diffcubeObj = LuxProbe.FindProperty("DIFFCube");
+        speccubeObj = LuxProbe.FindProperty("SPECCube");
+
+    //}
+
+    //public override void OnInspectorGUI()
+    //{
         //  Debug 
         //  DrawDefaultInspector();
 
@@ -84,6 +99,7 @@ public class LuxEnvProbeEditor : Editor
         EditorGUILayout.EndVertical();
         */
         //DrawDefaultInspector();
+
 
         // Let's give it some styles \m/
         GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
@@ -136,6 +152,11 @@ public class LuxEnvProbeEditor : Editor
         EditorGUILayout.PropertyField(Mode, new GUIContent("Cube Mode"));
         if (Mode.enumValueIndex == 1) {
             GUILayout.Space(4);
+            EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(ShowBoxSize, new GUIContent(""), GUILayout.Width(14));
+                GUILayout.Label("Show Probe’s Size");
+            EditorGUILayout.EndHorizontal();
+            GUILayout.Space(4);
             Target.ShowAssignedMeshes = EditorGUILayout.Foldout(Target.ShowAssignedMeshes,"Manage associated GameObjects");
             if (Target.ShowAssignedMeshes) {
                 GUILayout.Space(4);
@@ -175,8 +196,17 @@ public class LuxEnvProbeEditor : Editor
         EditorGUILayout.PropertyField(ClearColor, new GUIContent("Clear Color"));
         EditorGUILayout.PropertyField(Culling, new GUIContent("Culling Mask"));
         EditorGUILayout.PropertyField(Near, new GUIContent("Near Clip Plane"));
-        EditorGUILayout.PropertyField(Far, new GUIContent("Far Clip Plane"));     
+        EditorGUILayout.PropertyField(Far, new GUIContent("Far Clip Plane"));
+        
+        // In Box Mode we probably have to use the custom capture function
+        if ( (Mode.enumValueIndex == 1) && (Target.ProbeRotation != Vector3.zero) )
+        {   
+            Target.UseRTC = false;
+            GUI.enabled = false;
+        }
         EditorGUILayout.PropertyField(UseRTC, new GUIContent("RenderToCubemap"));
+        //
+        GUI.enabled = true;
 
         if (GUILayout.Button("Bake Probe", buttonStyle))
         {
@@ -194,30 +224,34 @@ public class LuxEnvProbeEditor : Editor
         GUILayout.Space(5);
         GUILayout.Label("Process Cubemaps", "BoldLabel");
 
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.BeginVertical();
-        GUILayout.Label("Diffuse Cubemap");
+    //    EditorGUILayout.BeginHorizontal();
+    //    EditorGUILayout.BeginVertical();
+    //    GUILayout.Label("Diffuse Cubemap");
+        
         // use object in order to enable manual assignment
-        diffcubeObj = EditorGUILayout.ObjectField(Target.DIFFCube, typeof(Cubemap), false, GUILayout.MinHeight(64), GUILayout.MinWidth(64), GUILayout.MaxWidth(64));
-        Target.DIFFCube = (Cubemap)diffcubeObj;
+        //   diffcubeObj = EditorGUILayout.ObjectField(Target.DIFFCube, typeof(Cubemap), false, GUILayout.MinHeight(64), GUILayout.MinWidth(64), GUILayout.MaxWidth(64));
+        //   Target.DIFFCube = (Cubemap)diffcubeObj;
+        EditorGUILayout.PropertyField(diffcubeObj, new GUIContent("Diffuse Cubemap"));
 
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.BeginVertical();
-        GUILayout.Label("Specular Cubemap");
+    //    EditorGUILayout.EndVertical();
+    //    EditorGUILayout.BeginVertical();
+    //    GUILayout.Label("Specular Cubemap");
+
         // use object in order to enable manual assignment
-        speccubeObj = EditorGUILayout.ObjectField(Target.SPECCube, typeof(Cubemap), false, GUILayout.MinHeight(64), GUILayout.MinWidth(64), GUILayout.MaxWidth(64));
-        Target.SPECCube = (Cubemap)speccubeObj;
+        //   speccubeObj = EditorGUILayout.ObjectField(Target.SPECCube, typeof(Cubemap), false, GUILayout.MinHeight(64), GUILayout.MinWidth(64), GUILayout.MaxWidth(64));
+        //   Target.SPECCube = (Cubemap)speccubeObj;
+        EditorGUILayout.PropertyField(speccubeObj, new GUIContent("Specular Cubemap"));
 
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.EndHorizontal();
+    //    EditorGUILayout.EndVertical();
+    //    EditorGUILayout.EndHorizontal();
 
         if (GUILayout.Button("Get Generated Cubemaps", buttonStyle))
         {
             Target.init = false;
             Target.CleanUp();
-            Target.RetriveCubemap();
-            Cubemap diff = Target.DIFFCube;
-            Cubemap spec = Target.SPECCube;
+            Target.RetrieveCubemaps();
+            // Cubemap diff = Target.DIFFCube;
+            // Cubemap spec = Target.SPECCube;
         }
 
         if (GUILayout.Button("Convolve Cubemaps", buttonStyle))
@@ -272,12 +306,5 @@ public class LuxEnvProbeEditor : Editor
             EditorGUILayout.EndVertical();
         }*/
     }
-
-
-    // Draw BoxSize Handles
-    void OnSceneGUI () {
-        BoxSize.vector3Value = Handles.ScaleHandle (BoxSize.vector3Value, Target.transform.position, Target.transform.rotation, 3.5f);
-    }
-
 }
 #endif

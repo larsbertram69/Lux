@@ -12,6 +12,7 @@ public enum LuxLightingModels
 }
 
 [ExecuteInEditMode]
+[AddComponentMenu("Lux/Lux Setup")]
 public class SetupLux : MonoBehaviour {
 	
 	public float Lux_HDR_Scale = 6.0f;
@@ -122,6 +123,7 @@ public class SetupLux : MonoBehaviour {
 				DestroyImmediate(PlaceHolderCube, true);
 			#endif
 		}
+
 	}
 	
 	

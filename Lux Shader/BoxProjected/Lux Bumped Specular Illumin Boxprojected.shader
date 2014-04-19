@@ -11,7 +11,7 @@ Properties {
 	_DiffCubeIBL ("Custom Diffuse Cube", Cube) = "black" {}
 	_SpecCubeIBL ("Custom Specular Cube", Cube) = "black" {}
 
-	_CubemapPositionWS ("Cube Position (Worldspace)", Vector) = (1,1,1,0)
+	//_CubemapPositionWS ("Cube Position (Worldspace)", Vector) = (1,1,1,0)
 	_CubemapSize ("Cube Size", Vector) = (1,1,1,0)
 	
 	// _Shininess property is needed by the lightmapper - otherwise it throws errors
@@ -49,7 +49,6 @@ SubShader {
 //	Activate Box Projection in LuxLightingAmbient
 	#define LUX_BOXPROJECTION
 
-//	#define LUX_BOXPRO_STATIC
 
 	// include should be called after all defines
 	#include "../LuxCore/LuxLightingDirect.cginc"
@@ -68,8 +67,10 @@ SubShader {
 	#endif
 
 //	Needed by Box Projection
-	float3 _CubemapPositionWS;
+	//float3 _CubemapPositionWS;
 	float3 _CubemapSize;
+	float4x4 _CubeMatrix_Trans;
+	float4x4 _CubeMatrix_Inv;
 	
 	// Is set by script
 	float4 ExposureIBL;
@@ -82,7 +83,7 @@ SubShader {
 		#endif
 		float3 viewDir;
 		float3 worldNormal;
-		// float3 worldRefl // not needed by Box Projection
+		float3 worldRefl;
 		// needed by Box Projection
 		float3 worldPos;
 		INTERNAL_DATA
