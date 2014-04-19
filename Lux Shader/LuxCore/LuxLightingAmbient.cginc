@@ -60,28 +60,23 @@
 		
 //		add specular IBL		
 		#ifdef SPECCUBE_ON
-			#ifdef LUX_BOXPROJECTION
-				half3 worldRefl;
-			#else
+			//#ifdef LUX_BOXPROJECTION
+			//	half3 worldRefl;
+			//#else
 				half3 worldRefl = WorldReflectionVector (IN, o.Normal);	
-			#endif
-			
-		//	Boxprojection / Using OBB volume
+			//#endif
+
+		//	Boxprojection / Rotation
 			#ifdef LUX_BOXPROJECTION
-
-				float3 DirectionWS = normalize(IN.worldPos - _WorldSpaceCameraPos);
-				float3 ReflDirectionWS = reflect(DirectionWS, worldNormal);
-
-				float3 RayLS = mul( _World2Object, float4(ReflDirectionWS, 0.0f));
-				float3 PositionLS = mul( _World2Object, float4(IN.worldPos, 1.0f));
-
-				float3 FirstPlaneIntersect  = (_CubemapSize - PositionLS) / RayLS;
-				float3 SecondPlaneIntersect = (-_CubemapSize - PositionLS) / RayLS;
-				float3 FurthestPlane = max(FirstPlaneIntersect, SecondPlaneIntersect);
-				
+				// Bring worldRefl and worldPos into Cube Map Space
+				worldRefl = mul(_CubeMatrix_Trans, float4(worldRefl,1)).xyz;
+				float3 PosCS = mul(_CubeMatrix_Inv,float4(IN.worldPos,1)).xyz;
+				float3 FirstPlaneIntersect = _CubemapSize - PosCS;
+				float3 SecondPlaneIntersect = -_CubemapSize - PosCS;
+				float3 FurthestPlane = (worldRefl > 0.0) ? FirstPlaneIntersect : SecondPlaneIntersect;
+				FurthestPlane /= worldRefl;
 				float Distance = min(FurthestPlane.x, min(FurthestPlane.y, FurthestPlane.z));
-				float3 IntersectPosWS = IN.worldPos + ReflDirectionWS * Distance;
-				worldRefl = IntersectPosWS - _CubemapPositionWS;
+				worldRefl = PosCS + worldRefl * Distance;
 			#endif
 
 			#if defined (LUX_LIGHTING_CT)
@@ -102,6 +97,7 @@
 			spec_ibl.rgb *= FresnelSchlickWithRoughness * ExposureIBL.y;
 			// add diffuse and specular and conserve energy
 			o.Emission = (1 - spec_ibl.rgb) * o.Emission + spec_ibl.rgb;
+
 		#endif
 		
 		#ifdef LUX_AO_ON
