@@ -202,14 +202,13 @@ public class LuxEnvProbe : MonoBehaviour {
         }
         // Mode = Boxprojection
         else {
-
             BoxSize = transform.lossyScale;
             // Draw center 
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.DrawCube(Vector3.zero, new Vector3(0.5f/transform.lossyScale.x,0.5f/transform.lossyScale.y,0.5f/transform.lossyScale.z));
             if(ShowBoxSize){
                 //Draw bounding box
-                Gizmos.DrawWireCube (Vector3.zero, new Vector3(BoxSize.x*0.25f,BoxSize.y*0.5f,BoxSize.z*0.5f));
+                Gizmos.DrawWireCube (Vector3.zero, new Vector3(transform.lossyScale.x*0.5f,transform.lossyScale.y*0.5f,transform.lossyScale.y*0.5f));
             }
             // Reset matrix
             Gizmos.matrix = Matrix4x4.identity;   
@@ -243,9 +242,6 @@ public class LuxEnvProbe : MonoBehaviour {
                                 if (SPECCube != null){
                                     AssignedMeshes[i].renderer.sharedMaterials[j].SetTexture("_SpecCubeIBL", SPECCube);
                                 }
-                            }
-                            else {
-                                Debug.Log("Material found that does not use a box projection shader.");
                             }
                         }
                     }
