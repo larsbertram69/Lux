@@ -208,7 +208,7 @@ public class LuxEnvProbe : MonoBehaviour {
             Gizmos.DrawCube(Vector3.zero, new Vector3(0.5f/transform.lossyScale.x,0.5f/transform.lossyScale.y,0.5f/transform.lossyScale.z));
             if(ShowBoxSize){
                 //Draw bounding box
-                Gizmos.DrawWireCube (Vector3.zero, new Vector3(transform.lossyScale.x*0.5f,transform.lossyScale.y*0.5f,transform.lossyScale.y*0.5f));
+                Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
             }
             // Reset matrix
             Gizmos.matrix = Matrix4x4.identity;   
