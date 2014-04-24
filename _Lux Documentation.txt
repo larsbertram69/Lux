@@ -25,6 +25,7 @@ TABLE OF CONTENT
     - AO
     - Spec
   - Roughness
+- Specular Anti Aliasing
 - Authoring Cubemaps
 - Writing Lux shaders
   - Shaders using the Specular reflectance workflow
@@ -232,6 +233,15 @@ Testing materials
 As the regular Lux shaders expect a combined specular color and roughness texture it might be a bit of a pain to adjust your textures.
 So Lux comes with a special shader called: "Lux Bumped Specular Materialtest" shader. This shader lets you apply the specular color map and the roughness map to different slots so you can author your roughness maps using adjustment layers in photoshop until you have found the right values. Additionally this shader lets you quickly lower the specular color and roughness using some simple sliders.
 Please note: You should not use this shader for your final built as it is more expensive than the regular shaders.
+
+
+- - - - - - - - - - - - - - - -
+SPECULAR ANTI ALIASING
+
+Working with a physically based shading model, usually shader aliasing becomes a common problem for smooth surfaces caused by high-frequency reflectance produced by the combination of the specular BRDF and highly detailed normal maps: So specular highlights tend to flicker while the player moves.
+You may fight this problem adjusting the "Aniso Level" and "Filter Mode" of the roughness and normal map.
+Additionally you can make use of the Lux TexturePostProcsssor which will prefilter the roughness map.
+For more infos please have a look at the "_Lux TexturePostprocessor.txt" file.
 
 
 - - - - - - - - - - - - - - - -
