@@ -110,6 +110,8 @@ Shader "Lux/Human/Hair" {
           
           // Include CustomFog
           #define SurfaceOutputLux SurfaceOutputLuxHair
+          // Define LUX_CAMERADISTANCE as IN.worldPosLux.w
+          #define LUX_CAMERADISTANCE IN.worldPosLux.w
           #include "../../LuxCore/LuxCustomFog.cginc"
           
           void vert (inout appdata_full v, out Input o) 
