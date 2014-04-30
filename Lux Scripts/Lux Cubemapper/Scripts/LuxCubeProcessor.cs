@@ -1,4 +1,4 @@
-//	////////////////////
+﻿//	////////////////////
 //	Lux LuxCubeProcessor
 
 //	http://seblagarde.wordpress.com/2012/06/10/amd-cubemapgen-for-physically-based-rendering/
