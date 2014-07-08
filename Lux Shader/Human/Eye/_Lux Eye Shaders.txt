@@ -13,7 +13,10 @@ This shader was written to allow you to render advanced eye balls and supportis 
 - PupilSize: Lets you dynamically adjust the size of the pupil in order to make it react to the amount of the incoming light.
 - Height: Determines the amount of the parallax effect applied to the iris.
 
-PLease note: When using PupilSize the shader has to make some "estimations" about the size of the iris in order to "know" which parts of the teture should be scaled and which should not be scaled. Right now it is hard coded and fits to the size of the iris defined by the sample textures. So either you author your textures according to the sample textures or you have to tweak the shader.
+Please note: When using PupilSize the shader has to make some "estimations" about the size of the iris in order to "know" which parts of the teture should be scaled and which should not be scaled. Right now it is hard coded and fits to the size of the iris defined by the sample textures. So either you author your textures according to the sample textures or you have to tweak the shader.
+
+Changelog
+- The current version of the shader uses a custom lighting function which will render the specular lighting according to the normal sampled from the normal map (which should be convex following the shape of the eye’s lens) and render the diffuse lighting using the "inversed" normal which is concave following the concave shape of the iris – not 100% correct but anyway.
 
 
 - - - - - - - - - - - - - - - -
