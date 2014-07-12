@@ -46,7 +46,9 @@ public class LuxMaterialInspector : MaterialEditor {
 			EditorGUILayout.LabelField("Enable Ambient Occlusion");
 			EditorGUILayout.EndHorizontal();
 			if (ambientOcclusion) {
-				TextureProperty("_AO", "Ambient Occlusion (Alpha)", ShaderUtil.ShaderPropertyTexDim.TexDim2D );
+				var prop = GetMaterialProperty (targets, "_AO");
+				TextureProperty(prop, prop.displayName, true);
+				//TextureProperty("_AO", "Ambient Occlusion (Alpha)", ShaderUtil.ShaderPropertyTexDim.TexDim2D );
 			}
 		}
 		if (EditorGUI.EndChangeCheck())
