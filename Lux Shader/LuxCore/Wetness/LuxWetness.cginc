@@ -109,7 +109,7 @@ inline float3 AddWaterRipples(float2 i_wetFactor, float3 i_worldPos, float2 lamb
         fixed3 finalflowBump = UnpackNormal(flowBump);
         // Mask water flow according to overallWetness and scale down flow normal according to speed (worldNormalFace.y)
         worlNormalY = saturate(worlNormalY);
-        return lerp(float3(0,0,1), finalflowBump, (1 - worlNormalY * worlNormalY) * overallWetness ) * float3( _FlowHeightScale, _FlowHeightScale, 1);
+        return lerp(float3(0,0,1), finalflowBump, (1 - worlNormalY * worlNormalY) * overallWetness ) * float3( _FlowHeightScale, _FlowHeightScale, 1) * fadeOutWaterBumps;
     } 
 
     //  Add Water Ripples to Waterflow
