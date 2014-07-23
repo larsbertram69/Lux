@@ -82,6 +82,7 @@
 			#if defined (LUX_LIGHTING_CT)
 				o.Specular *= o.Specular * (o.Specular * 0.305306011 + 0.682171111) + 0.012522878;
 			#endif
+
 			float mipSelect = 1.0f - o.Specular;
 			mipSelect = mipSelect * mipSelect * 7; // but * 6 would look better...
 			fixed4 spec_ibl = texCUBElod (_SpecCubeIBL, float4(worldRefl, mipSelect));
@@ -101,8 +102,12 @@
 		#endif
 		
 		#ifdef LUX_AO_ON
-			half ambientOcclusion = tex2D(_AO,IN.uv_AO).a;
-			o.Emission *= ambientOcclusion;
+			#if !defined(LUX_AO_SAMPLED)
+				half ambientOcclusion = tex2D(_AO,IN.uv_AO).a;
+				o.Emission *= ambientOcclusion;
+			#else
+				o.Emission *= ambientOcclusion.a;
+			#endif
 		#endif
 
 		#ifdef LUX_METALNESS

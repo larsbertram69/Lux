@@ -36,7 +36,28 @@ public class SetupLux : MonoBehaviour {
 	
 	private float linearFactorDiffuse;
 	private float linearFactorSpecular;
+
+	// RAIN
+	//public Texture2D rippleBase;
+	//public Texture2D ripples;
+	//private Color32[] baseRippleColors;
+	//private Color32[] rippleColors;
+
+	public Vector4 Lux_WaterFloodlevel = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+	public float Lux_RainIntensity = 0.0f;
+	public Texture2D Lux_RainRipples;
+	public Vector4 Lux_RippleWindSpeed = new Vector4(0.1f, 0.08f, 0.12f, 0.1f);
+	public float Lux_RippleTiling = 10.0f;
+	public float Lux_RippleAnimSpeed = 1.0f;
+	public float Lux_WaterBumpDistance = 20.0f;
 	
+
+	//void Awake () {
+	//	ripples = new Texture2D(256, 256, TextureFormat.ARGB32, true);
+	//	rippleColors = new Color32[256*256];
+	//}
+
+
 	// Use this for initialization
 	void Start () {
 		UpdateLuxIBLSettings();
@@ -52,6 +73,11 @@ public class SetupLux : MonoBehaviour {
 		//if (MainLightReference != null) {
 		//	Shader.SetGlobalVector("Lux_MainLightDir", MainLightReference.transform.forward );
 		//}
+
+		UpdateLuxRainSettings ();
+
+		//AnimateRipples();
+
 	}
 	
 	void UpdateLuxIBLSettings () {
@@ -140,5 +166,21 @@ public class SetupLux : MonoBehaviour {
 			PlaceHolderCube.Apply(true);
 		}
 	}
+
+
+	void UpdateLuxRainSettings () {
+		Shader.SetGlobalVector("_Lux_WaterFloodlevel", Lux_WaterFloodlevel);
+		Shader.SetGlobalFloat("_Lux_RainIntensity", Lux_RainIntensity);
+		if(Lux_RainRipples) {
+			Shader.SetGlobalTexture("_Lux_RainRipples", Lux_RainRipples);
+		}
+
+		Shader.SetGlobalVector("_Lux_RippleWindSpeed", Lux_RippleWindSpeed);
+		Shader.SetGlobalFloat("_Lux_RippleTiling", Lux_RippleTiling);
+		Shader.SetGlobalFloat("_Lux_RippleAnimSpeed", Lux_RippleAnimSpeed);	
+		Shader.SetGlobalFloat("_Lux_WaterBumpDistance", Lux_WaterBumpDistance);	
+
+	}
+
 }
 
