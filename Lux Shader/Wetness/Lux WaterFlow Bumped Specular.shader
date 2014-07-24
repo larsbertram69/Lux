@@ -50,16 +50,16 @@ SubShader {
 
 	// #pragma debug
 
-	#pragma multi_compile LUX_LIGHTING_BP LUX_LIGHTING_CT
-	#pragma multi_compile LUX_LINEAR LUX_GAMMA
-	#pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
-	#pragma multi_compile SPECCUBE_ON SPECCUBE_OFF
+//	#pragma multi_compile LUX_LIGHTING_BP LUX_LIGHTING_CT
+//	#pragma multi_compile LUX_LINEAR LUX_GAMMA
+//	#pragma multi_compile DIFFCUBE_ON DIFFCUBE_OFF
+//	#pragma multi_compile SPECCUBE_ON SPECCUBE_OFF
 	#pragma multi_compile LUX_AO_OFF LUX_AO_ON
 
-//	#define LUX_LIGHTING_BP
-//	#define LUX_LINEAR
-//	#define DIFFCUBE_ON
-//	#define SPECCUBE_ON
+	#define LUX_LIGHTING_BP
+	#define LUX_LINEAR
+	#define DIFFCUBE_ON
+	#define SPECCUBE_ON
 //	#define LUX_AO_ON
 
 
@@ -197,7 +197,6 @@ SubShader {
 	    	wetFactor = ComputeWaterAccumulation(PuddleMask, HeightWetness.ar, worldNormalFace.y ) * WetMask;
 			// Calc WaterBumps Distance
         	float fadeOutWaterBumps = saturate( ( _Lux_WaterBumpDistance - distance(_WorldSpaceCameraPos, IN.worldPos)) / 5);
-
         	if (fadeOutWaterBumps > 0) {
 	    		// Add Water Flow
 	    		float2 flowDirection = float2(IN.color.a, IN.myworldPos.w) / 4;
@@ -225,9 +224,6 @@ SubShader {
     //	Standard functions
     	// Sample the Base Textures
 		fixed4 diff_albedo = tex2D(_MainTex, IN.LuxUV_MainAOTex.xy);
-		
-//fixed4 diff_albedo = tex2Dlod(_MainTex, float4(IN.LuxUV_MainAOTex.xy, lambda) );
-
 		fixed4 spec_albedo = tex2D(_SpecTex, IN.LuxUV_MainAOTex.xy);
 		// Diffuse Albedo
 		o.Albedo = diff_albedo.rgb * _Color.rgb;
