@@ -104,8 +104,8 @@ SubShader {
 		o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
 		// Specular Color
 		o.SpecularColor = spec_albedo.rgb;
-		// Roughness – gamma for BlinnPhong / linear for CookTorrence
-		o.Specular = LuxAdjustSpecular(spec_albedo.a);
+		// Roughness
+		o.Specular = spec_albedo.a;
 
 	//	//////////////////
 	//	Wetness specific
@@ -129,6 +129,8 @@ SubShader {
 
 		}
 
+		// Roughness – gamma for BlinnPhong / linear for CookTorrence
+		o.Specular = LuxAdjustSpecular(o.Specular);
 
 		#include "../LuxCore/LuxLightingAmbient.cginc"
 	}

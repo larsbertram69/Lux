@@ -231,8 +231,8 @@ SubShader {
 		o.Normal = UnpackNormal(tex2D(_BumpMap, IN.LuxUV_MainAOTex.xy));
 		// Specular Color
 		o.SpecularColor = spec_albedo.rgb;
-		// Convert Roughness for BlinnPhong / CookTorrence as in other Lux shaders
-		o.Specular = LuxAdjustSpecular(o.Specular);
+		// Roughness
+		o.Specular = spec_albedo.a;
 	
 
 	//	//////////////////
@@ -246,6 +246,9 @@ SubShader {
 		// We have to remap the _AO uv coords before we can call the include
 		#define uv_AO LuxUV_MainAOTex.zw
 	//	//////////////////
+
+		// Convert Roughness for BlinnPhong / CookTorrence as in other Lux shaders
+		o.Specular = LuxAdjustSpecular(o.Specular);
 
 		#include "../LuxCore/LuxLightingAmbient.cginc"
 	}
