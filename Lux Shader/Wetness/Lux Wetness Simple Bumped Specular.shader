@@ -125,7 +125,7 @@ SubShader {
 			// Calling "o.Specular = WaterBRDF()" will tweak o.Albedo, o.Specular and o.SpecularColor according to the overall wetness (wetFactor.x)
 			o.Specular = WaterBRDF(o.Albedo, o.Specular, o.SpecularColor, wetFactor);
 			// Finally tweak o.Normal based on the overall Wetness Factor
-			o.Normal = lerp(o.Normal, fixed3(0,0,1), wetFactor);
+			o.Normal = normalize (lerp(o.Normal, fixed3(0,0,1), wetFactor));
 
 		}
 
