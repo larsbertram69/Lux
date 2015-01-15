@@ -409,6 +409,8 @@ public class LuxEnvProbe : MonoBehaviour {
         }
 
         cube = new Cubemap((int)size, texFor, mipmap);
+        // make sure everything is up an running before capturing the probe
+        yield return new WaitForSeconds(1);
         yield return StartCoroutine(Capture(cube, CubemapFace.PositiveZ, CubeCamera));
         yield return StartCoroutine(Capture(cube, CubemapFace.PositiveX, CubeCamera));
         yield return StartCoroutine(Capture(cube, CubemapFace.NegativeX, CubeCamera));
